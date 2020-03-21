@@ -471,6 +471,10 @@ int main ( int argc, char **argv ) {
 
 		}
 
+		/*
+		 * VOLTAGE
+		 *
+		 */
 		sz = write(f, "MEAS:VOLT?", sizeof("MEAS:VOLT?"));
 		if (sz < 0) {
 			error_flag = true;
@@ -502,12 +506,17 @@ int main ( int argc, char **argv ) {
 		buf_volt[bp] = '\0';
 		if ((bp > 0) && buf_volt[bp-1] == '\n') buf_volt[bp -1] = '\0';
 
+
+		/*
+		 * CURRENT
+		 *
+		 */
 		bp = 0;
 		sz = write(f, "MEAS:CURR?", sizeof("MEAS:CURR?"));
 		if (sz < 0) {
 			error_flag = true;
 			fprintf(stdout,"Error sending CURRENT query: %s\n", strerror(errno));
-			snprintf(buf_volt,sizeof(buf_volt),"NODATA");
+			snprintf(buf_curr,sizeof(buf_curr),"NODATA");
 			//exit(1);
 		}
 		usleep(20000);
@@ -516,7 +525,7 @@ int main ( int argc, char **argv ) {
 			if (sz == -1) {
 				error_flag = true;
 				fprintf(stdout,"Error reading data from PSU: %s\n", strerror(errno));
-				snprintf(buf_volt,sizeof(buf_volt),"NODATA");
+				snprintf(buf_curr,sizeof(buf_curr),"NODATA");
 				break;
 				//exit(1);
 			}
