@@ -733,7 +733,6 @@ int main ( int argc, char **argv ) {
 		usleep(20000);
 		sz = data_read( &g, buf_volt, sizeof(buf_volt) );
 
-
 		sz = data_write( &g, g.meas_curr, strlen(g.meas_curr));
 		usleep(20000);
 		sz = data_read( &g, buf_curr, sizeof(buf_curr));
