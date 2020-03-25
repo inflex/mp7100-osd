@@ -1,11 +1,8 @@
 /*
- * BK Precision Model MP7100 multimeter data stream reading software
- *
- * V0.1 - January 27, 2018
- * V0.2 - April 4, 2018
+ * Multicomp MP7100xx seriesl Power Supply Unit
+ * (also similar to OWON series)
  *
  * Written by Paul L Daniels (pldaniels@gmail.com)
- * For Louis Rossmann (to facilitate meter display on OBS).
  *
  */
 
@@ -33,47 +30,6 @@
 #ifndef BUILD_DATE
 #define BUILD_DATE " "
 #endif
-
-//char VERSION[] = BUILD_STR;
-#define BYTE_RANGE 0
-#define BYTE_DIGIT_3 1
-#define BYTE_DIGIT_2 2
-#define BYTE_DIGIT_1 3
-#define BYTE_DIGIT_0 4
-#define BYTE_FUNCTION 5
-#define BYTE_STATUS 6
-#define BYTE_OPTION_1 7
-#define BYTE_OPTION_2 8
-#define DATA_FRAME_SIZE 11 // 9 bytes followed by \r\n
-
-#define FUNCTION_VOLTAGE 0b00111011
-#define FUNCTION_CURRENT_UA 0b00111101
-#define FUNCTION_CURRENT_MA 0b00111001
-#define FUNCTION_CURRENT_A 0b00111111
-#define FUNCTION_OHMS 0b00110011
-#define FUNCTION_CONTINUITY 0b00110101
-#define FUNCTION_DIODE 0b00110001
-#define FUNCTION_FQ_RPM 0b00110010
-#define FUNCTION_CAPACITANCE 0b00110110
-#define FUNCTION_TEMPERATURE 0b00110100
-#define FUNCTION_ADP0 0b00111110
-#define FUNCTION_ADP1 0b00111100
-#define FUNCTION_ADP2 0b00111000
-#define FUNCTION_ADP3 0b00111010
-
-#define STATUS_OL 0x01
-#define STATUS_BATT 0x02
-#define STATUS_SIGN 0x04
-#define STATUS_JUDGE 0x08
-
-#define OPTION1_VAHZ 0x01
-#define OPTION1_PMIN 0x04
-#define OPTION1_PMAX 0x08
-
-#define OPTION2_APO 0x01
-#define OPTION2_AUTO 0x02
-#define OPTION2_AC 0x04
-#define OPTION2_DC 0x08
 
 #define WINDOWS_DPI_DEFAULT 72
 #define FONT_NAME_SIZE 1024
@@ -190,9 +146,9 @@ void show_help(void) {
 			"\t-q: quiet output\r\n"
 			"\t-v: show version\r\n"
 			"\r\n"
-			"\tDefaults: -s 2400:7o1 -z 72 -fc #10ff10 -bc #000000 -fw 600\r\n"
+			"\tDefaults: -s 115200:8n1 -z 72 -fc #10ff10 -bc #000000 -fw 600\r\n"
 			"\r\n"
-			"\texample: bk390a.exe -z 120 -p 4 -s 2400:7o1 -m -fc #10ff10 -bc #000000 -wx 480 -wy 60 -fw 600\r\n"
+			"\texample: mp7100-win.exe -z 120 -p 4 -s 9600:8n1 -m -fc #10ff10 -bc #000000 -wx 480 -wy 60 -fw 600\r\n"
 			, BUILD_VER
 			, BUILD_DATE 
 			);
@@ -321,7 +277,7 @@ int parse_parameters(struct glb *g) {
 							 if (i < argc) {
 								 wcstombs(g->serial_params, argv[i], sizeof(g->serial_params));
 							 } else {
-								 wprintf(L"Insufficient parameters; -s <parameters> [eg 9600:8:o:1] = 9600, 8-bit, odd, 1-stop\n");
+								 wprintf(L"Insufficient parameters; -s <parameters> [eg 9600:8n1] = 9600, 8-bit, no parity, 1-stop\n");
 								 exit(1);
 							 }
 							 break;
