@@ -712,7 +712,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLin
 		InvalidateRect(hstatic, NULL, FALSE);
 		UpdateWindow(hstatic);
 
-		sleep(1);
 	} // Windows message loop
 
 	CloseHandle(hComm); // Closing the Serial Port
