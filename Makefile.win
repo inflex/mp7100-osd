@@ -1,0 +1,56 @@
+# 
+# VERSION CHANGES
+#
+
+# the ?=  sets a default value if not defined already via ENV
+FAKE_SERIAL ?= 0
+BV=$(shell (git rev-list HEAD --count))
+BD=$(shell (date))
+
+LOCATION=/usr/local
+CFLAGS=-O -DBUILD_VER="$(BV)"  -DBUILD_DATE=\""$(BD)"\" -DFAKE_SERIAL=$(FAKE_SERIAL)
+LIBS=
+WINLIBS=-lgdi32 -lcomdlg32 -lcomctl32 -lmingw32
+WINCC=i686-w64-mingw32-g++
+# -fpermissive is needed to stop the warnings about casting stoppping the build
+# -municode eliminates the WinMain@16 link error when we're using wWinMain
+#WINFLAGS=-municode -static-libgcc -fpermissive -static-libstdc++
+WINFLAGS=-municode -static-libgcc -static-libstdc++
+
+OBJ=mp7100
+WINOBJ=mp7100-win.exe
+OFILES=
+
+default: 
+	@echo
+	@echo "   For OBS command line tool: make mp7100"
+	@echo "   For GUI tool: make mp7100-win"
+	@echo
+	@echo "   To make a GUI test, export FAKE_SERIAL=1 && make mp7100-win"
+	@echo
+
+.c.o:
+	${CC} ${CFLAGS} $(COMPONENTS) -c $*.c
+
+all: ${OBJ} 
+
+mp7100-win: ${OFILES} mp7100-win.cpp 
+	@echo Build Release $(BV)
+	@echo Build Date $(BD)
+#	ctags *.[ch]
+#	clear
+	${WINCC} ${CFLAGS} ${WINFLAGS} $(COMPONENTS) mp7100-win.cpp ${OFILES} -o mp7100-win.exe ${LIBS} ${WINLIBS}
+
+mp7100: ${OFILES} mp7100.c 
+#	ctags *.[ch]
+#	clear
+	${CC} ${CFLAGS} $(COMPONENTS) mp7100.c ${OFILES} -o mp7100.exe ${LIBS}
+
+strip: 
+	strip *.exe
+
+install: ${OBJ}
+	cp mp7100 mp7100-win ${LOCATION}/bin/
+
+clean:
+	rm -f *.o *core ${OBJ} ${WINOBJ}
