@@ -12,7 +12,8 @@ reasonably modern kernels already have this.
 
 Build	 
 
-	make 
+	(linux) make
+	(windows binary, on linux) make -f Makefile.win mp7100-win
 	
 # Usage
 	
