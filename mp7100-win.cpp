@@ -433,34 +433,36 @@ void enable_coms(struct glb *pg, wchar_t *com_port) {
 }
 
 
-ssize_t readData( struct glb *g, char *b, ssize_t bs ) {
-	ssize_t i = 0;
+DWORD readData( struct glb *g, char *b, DWORD bs ) {
 	BOOL com_read_status;
 	DWORD bytes_read;
+	DWORD i = 0;
 	char temp_char;
 	char buf[128];
 
 	if (g->debug) { wprintf(L"DATA START: "); }
 
-	*b = '\0';
-
 	do {
 		com_read_status = ReadFile(hComm, &temp_char, 1, &bytes_read, NULL);
+
 		if (com_read_status) {
-			b[i] = temp_char;
-			if (g->debug) { wprintf(L"%02x ", b[i]); }
-			i++;
-			if (temp_char == '\n') {
-				i-=2;
+			if (bytes_read == 1) {
+				if (temp_char == '\n') {
+					b[i] = '\0';
+					i--;
+					break;
+				}
 
-				break;
+				b[i] = temp_char;
+				i++;
 			}
-
 
 		} else {
 			DWORD err;
 			err = GetLastError();
 			wprintf(L"Com read FAIL, error %d\r\n", err);
+			snprintf(b,bs,"No Data");
+			return 0;
 		}
 
 	} while ((bytes_read > 0) && (i < bs));
@@ -563,7 +565,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLin
 
 	RegisterClassW(&wc);
 
-	hstatic = CreateWindowW(wc.lpszClassName, L"MP7100 Meter", WS_OVERLAPPEDWINDOW | WS_VISIBLE, 50, 50, g.window_x, g.window_y, NULL, NULL, hInstance, NULL);
+	hstatic = CreateWindowW(wc.lpszClassName, L"MP7100xx Meter", WS_OVERLAPPEDWINDOW | WS_VISIBLE, 50, 50, g.window_x, g.window_y, NULL, NULL, hInstance, NULL);
 
 	/*
 	 *
@@ -652,10 +654,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLin
 
 		writeData(&g, qv, strlen(qv));
 		Sleep(10);
+//		snprintf(buf_volt, sizeof(buf_volt), "No data");
 		readData(&g, buf_volt, 128);
 		Sleep(10);
 		writeData(&g, qc, strlen(qc));
 		Sleep(10);
+//		snprintf(buf_curr, sizeof(buf_curr), "No data");
 		readData(&g, buf_curr, 128);
 		Sleep(10);
 
