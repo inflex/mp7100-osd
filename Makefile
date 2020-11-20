@@ -12,16 +12,16 @@ LIBS=-lSDL2_ttf
 CC=gcc
 GCC=g++
 
-OBJ=mp7100
+OBJ=csi3005p
 
 default: $(OBJ)
 	@echo
 	@echo
 
-mp7100: mp7100.cpp
+csi3005p: csi3005p.cpp
 	@echo Build Release $(BV)
 	@echo Build Date $(BD)
-	${GCC} ${CFLAGS} $(COMPONENTS) mp7100.cpp $(SDLFLAGS) $(LIBS) ${OFILES} -o ${OBJ} 
+	${GCC} ${CFLAGS} $(COMPONENTS) csi3005p.cpp $(SDLFLAGS) $(LIBS) ${OFILES} -o ${OBJ} 
 
 clean:
 	rm -v ${OBJ} 
