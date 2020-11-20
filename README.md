@@ -1,5 +1,5 @@
-# MP7100-OSD 
-MP7100-OSD - GUI windowed application
+# csi3005p
+csi3005p - CircuitWorks CSI3005p PSU OSD for OBS
 
 # Requirements
 
@@ -13,14 +13,13 @@ reasonably modern kernels already have this.
 Build	 
 
 	(linux) make
-	(windows binary, on linux) make -f Makefile.win mp7100-win
 	
 # Usage
 	
    
 Run from the command line
 
-	sudo ./mp7100-osd -p /dev/usbtmc2
+	sudo ./csi3005p -p /dev/usbtmc2
 
 
 
